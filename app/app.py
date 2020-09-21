@@ -47,7 +47,7 @@ def create_app(test_config=None):
             cars = Car.query.all()
             formated_cars = [
                 cars.format() for car in cars]
-            if not car:
+            if not cars:
                 abort(404)
             return jsonify({
                 'success': True,
@@ -55,6 +55,21 @@ def create_app(test_config=None):
             })
         except BaseException:
             print(sys.exc_info())
+            abort(404)
+
+    @app.route('/cars/<int:car_id>', methods=['GET'])
+    def get_car(car_id):
+        try:
+            car = Car.query.filter(
+                Car.id == car_id).one_or_none()
+            if car is None:
+                abort(404)
+            return jsonify({
+                'success': True,
+                'model': car.model,
+                'mileage': car.mileage
+            })
+        except BaseException:
             abort(404)
 
     '''
@@ -71,9 +86,6 @@ def create_app(test_config=None):
         }), 404
 
     return app
-
-
-
 
 
 if __name__ == '__main__':
