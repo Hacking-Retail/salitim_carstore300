@@ -1,10 +1,7 @@
-import os
 from flask import Flask, request, abort, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS, cross_origin
-from .models.models import setup_db, Car, Store, Customer, Bill
+from flask_cors import CORS
+from .models.models import setup_db, Car, Customer, Bill
 from flask_httpauth import HTTPBasicAuth
-import json
 import sys
 from flask import g
 
@@ -38,6 +35,7 @@ def create_app(test_config=None):
         user = Customer.query.filter_by(name=username).first()
         if not user or not user.verify_password(password):
             return False
+        g.user = user
         return True
 
     @app.route('/', methods=['GET'])
@@ -91,7 +89,7 @@ def create_app(test_config=None):
                 abort(400)  # missing arguments
             if Customer.query.filter_by(name=name).first() is not None:
                 abort(400)  # existing user
-            new_user = Customer(name=name, password=password)
+            new_user = Customer(name=name)
             new_user.hash_password(password)
             new_user.insert()
             return jsonify({"success": True})
@@ -109,9 +107,12 @@ def create_app(test_config=None):
     def buy_car(car_id):
         try:
             print(car_id)
-            active_car = Car.query.get(car_id)
-            print(active_car)
-            new_bill = Bill(price=active_car.price_eur, car_id=car_id, customer_id=g.user.id)
+            active_car = Car.query.filter(
+                Car.id == car_id).one_or_none()
+            print(active_car.price_eur)
+            new_bill = Bill(price=active_car.price_eur)
+            new_bill.car_id = car_id
+            new_bill.cars = active_car
             new_bill.insert()
             return jsonify({"success": True})
         except BaseException:

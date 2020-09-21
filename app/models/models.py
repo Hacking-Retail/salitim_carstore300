@@ -87,7 +87,7 @@ class Car(Entity, db.Model):
             'door_count': self.door_count,
             'seat_count': self.seat_count,
             'fuel_type': self.fuel_type,
-            'price_eur': self.price_eur,
+            'price_eur': self.price_eur
 
         }
 
@@ -120,10 +120,6 @@ class Customer(Entity, db.Model):
     password_hash = Column(String)
 
     bills = db.relationship("Bill", backref='customer', lazy=True, cascade="all, delete-orphan")
-
-    def __init__(self, name, password_hash):
-        self.name = name
-        self.password = password_hash
 
     def hash_password(self, password):
         self.password_hash = pwd_context.encrypt(password)
