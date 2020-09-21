@@ -6,6 +6,7 @@ from .models.models import setup_db, Car, Store, Customer, Bill
 from flask_httpauth import HTTPBasicAuth
 import json
 import sys
+from flask import g
 
 
 def create_app(test_config=None):
@@ -80,7 +81,7 @@ def create_app(test_config=None):
         except BaseException:
             abort(404)
 
-    @app.route('/users/', methods=['POST'])
+    @app.route('/users', methods=['POST'])
     def new_user():
         try:
             body = request.get_json()
@@ -93,6 +94,25 @@ def create_app(test_config=None):
             new_user = Customer(name=name, password=password)
             new_user.hash_password(password)
             new_user.insert()
+            return jsonify({"success": True})
+        except BaseException:
+            print(sys.exc_info())
+            abort(422)
+
+    @app.route('/test', methods=['GET'])
+    @auth.login_required
+    def test():
+        print('test')
+
+    @app.route('/cars/<int:car_id>/bills/', methods=['POST'])
+    @auth.login_required
+    def buy_car(car_id):
+        try:
+            print(car_id)
+            active_car = Car.query.get(car_id)
+            print(active_car)
+            new_bill = Bill(price=active_car.price_eur, car_id=car_id, customer_id=g.user.id)
+            new_bill.insert()
             return jsonify({"success": True})
         except BaseException:
             print(sys.exc_info())

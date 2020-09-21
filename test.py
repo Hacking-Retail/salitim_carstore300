@@ -11,10 +11,9 @@ class TestGlobal(unittest.TestCase):
         self.app = create_app()
         self.client = self.app.test_client
 
-    def test_response(self):
+    def test_response_home(self):
         res = self.client().get('/')
         self.assertEqual(res.statut_code, 200)
-
 
 if __name__ == '__main__':
     unittest.main()
