@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 import json
 
+
 database_name = "carstore"
 database_path = "postgres://{}:{}@{}/{}".format(
     'postgres', 'password', 'localhost:5432', database_name)
@@ -124,10 +125,12 @@ class Customer(db.Model):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
+    password = Column(String)
     bills = db.relationship("Bill", backref='customer', lazy=True, cascade="all, delete-orphan")
 
-    def __init__(self, name):
+    def __init__(self, name, password):
         self.name = name
+        self.password = password
 
     def insert(self):
         db.session.add(self)
@@ -143,7 +146,8 @@ class Customer(db.Model):
     def format(self):
         return {
             'id': self.id,
-            'name': self.name
+            'name': self.name,
+            'password': self.password
             }
 
 

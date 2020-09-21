@@ -2,18 +2,18 @@ import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
-from flask_cors import CORS, cross_origin
 from .models.models import setup_db, Car, Store, Customer, Bill
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_httpauth import HTTPBasicAuth
 import json
 import sys
-from .models import models
 
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
     setup_db(app)
-
+    auth = HTTPBasicAuth()
     '''
   CORS. Allow '*' for origins. Delete the sample route after
   completing the TODOs
@@ -72,7 +72,20 @@ def create_app(test_config=None):
         except BaseException:
             abort(404)
 
-    '''
+    @app.route('/users/', methods=['POST'])
+    def new_user():
+        try:
+            body = request.get_json()
+            name = body.get('user_name')
+            password = body.get('password')
+            new_user = Customer(name= name, password=generate_password_hash(password))
+            new_user.insert()
+            return jsonify({"success": True})
+        except BaseException:
+            print(sys.exc_info())
+            abort(422)
+
+        '''
             implement error handler for 404
             error handler should conform to general task above
         '''

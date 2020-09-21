@@ -11,7 +11,7 @@ class TestGlobal(unittest.TestCase):
         self.app = create_app()
         self.client = self.app.test_client
 
-    def test_upper(self):
+    def test_response(self):
         res = self.client().get('/')
         self.assertEqual(res.statut_code, 200)
 
