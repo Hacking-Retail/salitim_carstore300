@@ -57,6 +57,7 @@ def create_app(test_config=None):
             print(sys.exc_info())
             abort(404)
 
+
     @app.route('/cars/<int:car_id>', methods=['GET'])
     def get_car(car_id):
         try:
@@ -77,8 +78,8 @@ def create_app(test_config=None):
         try:
             body = request.get_json()
             name = body.get('user_name')
-            password = body.get('password')
-            new_user = Customer(name= name, password=generate_password_hash(password))
+            password = generate_password_hash(body.get('password'))
+            new_user = Customer(name=name, password=password)
             new_user.insert()
             return jsonify({"success": True})
         except BaseException:
