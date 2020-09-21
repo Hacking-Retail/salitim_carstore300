@@ -25,7 +25,20 @@ def setup_db(app, database_path=database_path):
     db.create_all()
 
 
-class Car(db.Model):
+class Entity:
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+
+class Car(Entity, db.Model):
     __tablename__ = 'cars'
 
     id = Column(Integer, primary_key=True)
@@ -59,17 +72,6 @@ class Car(db.Model):
         self.fuel_type = fuel_type
         self.price_eur = price_eur
 
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self):
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
     def format(self):
         return {
             'id': self.id,
@@ -89,7 +91,7 @@ class Car(db.Model):
         }
 
 
-class Store(db.Model):
+class Store(Entity, db.Model):
     __tablename__ = 'stores'
 
     id = Column(Integer, primary_key=True)
@@ -101,17 +103,6 @@ class Store(db.Model):
         self.name = name,
         self.adress = adress
 
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self):
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
     def format(self):
         return {
             'id': self.id,
@@ -120,7 +111,7 @@ class Store(db.Model):
             }
 
 
-class Customer(db.Model):
+class Customer(Entity, db.Model):
     __tablename__ = 'customers'
 
     id = Column(Integer, primary_key=True)
@@ -132,17 +123,6 @@ class Customer(db.Model):
         self.name = name
         self.password = password
 
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self):
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
     def format(self):
         return {
             'id': self.id,
@@ -151,7 +131,7 @@ class Customer(db.Model):
             }
 
 
-class Bill(db.Model):
+class Bill(Entity, db.Model):
     __tablename__ = 'bills'
 
     id = Column(Integer, primary_key=True)
@@ -162,17 +142,6 @@ class Bill(db.Model):
 
     def __init__(self, price):
         self.price = price
-
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self):
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
 
     def format(self):
         return {
