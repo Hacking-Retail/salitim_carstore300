@@ -84,3 +84,87 @@ class Car(db.Model):
             'price_eur': self.price_eur,
 
         }
+
+
+class Store(db.Model):
+    __tablename__ = 'stores'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    adress = Column(String)
+
+    def __init__(self, name, adress):
+        self.name = name,
+        self.adress = adress
+
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def format(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'adress': self.adress,
+            }
+
+
+class Customer(db.Model):
+    __tablename__ = 'customers'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+
+    def __init__(self, name):
+        self.name = name
+
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def format(self):
+        return {
+            'id': self.id,
+            'name': self.name
+            }
+
+
+class Bill(db.Model):
+    __tablename__ = 'bills'
+
+    id = Column(Integer, primary_key=True)
+    price = Column(Float)
+
+    def __init__(self, price):
+        self.price = price
+
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def format(self):
+        return {
+            'id': self.id,
+            'name': self.price,
+            }

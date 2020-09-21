@@ -3,7 +3,7 @@ from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 from flask_cors import CORS, cross_origin
-from .models.models import setup_db, Car
+from .models.models import setup_db, Car, Store, Customer, Bill
 import json
 import sys
 from .models import models
