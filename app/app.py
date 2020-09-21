@@ -41,12 +41,12 @@ def create_app(test_config=None):
             print(sys.exc_info())
             abort(404)
 
-    @app.route('/cars', methods=['GET'])
+    @app.route('/cars/', methods=['GET'])
     def get_cars():
         try:
             cars = Car.query.all()
             formated_cars = [
-                cars.format() for car in cars]
+                car.format() for car in cars]
             if not cars:
                 abort(404)
             return jsonify({
