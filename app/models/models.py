@@ -1,6 +1,7 @@
 import os
-from sqlalchemy import Column, String, Integer, create_engine, Float
+from sqlalchemy import Column, String, Integer, create_engine, Float, ForeignKey
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship
 import json
 
 database_name = "carstore"
@@ -39,7 +40,8 @@ class Car(db.Model):
     seat_count = Column(Integer)
     fuel_type = Column(String)
     price_eur = Column(Float)
-    # messages = db.relationship("Message", backref='car', lazy=True, cascade="all, delete-orphan")
+    store_id = db.Column(db.Integer, db.ForeignKey('stores.id'), nullable=True)
+    bills = relationship("Bill", uselist=False, back_populates="cars")
 
     def __init__(self, maker, model, mileage, manufacture_year, engine_displacement, engine_power, color_slug,
                  transmission, door_count, seat_count, fuel_type, price_eur):
@@ -92,6 +94,7 @@ class Store(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     adress = Column(String)
+    cars = db.relationship("Car", backref='store', lazy=True, cascade="all, delete-orphan")
 
     def __init__(self, name, adress):
         self.name = name,
@@ -121,6 +124,7 @@ class Customer(db.Model):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
+    bills = db.relationship("Bill", backref='customer', lazy=True, cascade="all, delete-orphan")
 
     def __init__(self, name):
         self.name = name
@@ -148,6 +152,9 @@ class Bill(db.Model):
 
     id = Column(Integer, primary_key=True)
     price = Column(Float)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=True)
+    car_id = Column(Integer, ForeignKey('cars.id'))
+    cars = relationship("Car", back_populates="bills")
 
     def __init__(self, price):
         self.price = price
