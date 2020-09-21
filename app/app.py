@@ -3,7 +3,6 @@ from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 from .models.models import setup_db, Car, Store, Customer, Bill
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_httpauth import HTTPBasicAuth
 import json
 import sys
@@ -33,6 +32,13 @@ def create_app(test_config=None):
                              'GET,PUT,POST,DELETE,OPTIONS')
         return response
 
+    @auth.verify_password
+    def verify_password(username, password):
+        user = Customer.query.filter_by(name=username).first()
+        if not user or not user.verify_password(password):
+            return False
+        return True
+
     @app.route('/', methods=['GET'])
     def get_home():
         try:
@@ -41,7 +47,8 @@ def create_app(test_config=None):
             print(sys.exc_info())
             abort(404)
 
-    @app.route('/cars/', methods=['GET'])
+    @app.route('/cars', methods=['GET'])
+    @auth.login_required
     def get_cars():
         try:
             cars = Car.query.all()
@@ -57,8 +64,8 @@ def create_app(test_config=None):
             print(sys.exc_info())
             abort(404)
 
-
     @app.route('/cars/<int:car_id>', methods=['GET'])
+    @auth.login_required
     def get_car(car_id):
         try:
             car = Car.query.filter(
@@ -78,8 +85,13 @@ def create_app(test_config=None):
         try:
             body = request.get_json()
             name = body.get('user_name')
-            password = generate_password_hash(body.get('password'))
+            password = body.get('password')
+            if name is None or password is None:
+                abort(400)  # missing arguments
+            if Customer.query.filter_by(name=name).first() is not None:
+                abort(400)  # existing user
             new_user = Customer(name=name, password=password)
+            new_user.hash_password(password)
             new_user.insert()
             return jsonify({"success": True})
         except BaseException:

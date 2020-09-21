@@ -2,6 +2,7 @@ import os
 from sqlalchemy import Column, String, Integer, create_engine, Float, ForeignKey
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
+from passlib.apps import custom_app_context as pwd_context
 import json
 
 
@@ -116,18 +117,24 @@ class Customer(Entity, db.Model):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    password = Column(String)
+    password_hash = Column(String)
+
     bills = db.relationship("Bill", backref='customer', lazy=True, cascade="all, delete-orphan")
 
-    def __init__(self, name, password):
+    def __init__(self, name, password_hash):
         self.name = name
-        self.password = password
+        self.password = password_hash
+
+    def hash_password(self, password):
+        self.password_hash = pwd_context.encrypt(password)
+
+    def verify_password(self, password):
+        return pwd_context.verify(password, self.password_hash)
 
     def format(self):
         return {
             'id': self.id,
             'name': self.name,
-            'password': self.password
             }
 
 
