@@ -97,11 +97,6 @@ def create_app(test_config=None):
             print(sys.exc_info())
             abort(422)
 
-    @app.route('/test', methods=['GET'])
-    @auth.login_required
-    def test():
-        print('test')
-
     @app.route('/cars/<int:car_id>/bills/', methods=['POST'])
     @auth.login_required
     def buy_car(car_id):
