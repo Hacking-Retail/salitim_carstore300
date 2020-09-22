@@ -106,10 +106,9 @@ def create_app(test_config=None):
     @auth.login_required
     def buy_car(car_id):
         try:
-            print(car_id)
             active_car = Car.query.filter(
                 Car.id == car_id).one_or_none()
-            print(active_car.price_eur)
+            print(active_car.format()['price_eur'])
             new_bill = Bill(price=active_car.price_eur)
             new_bill.car_id = car_id
             new_bill.cars = active_car
