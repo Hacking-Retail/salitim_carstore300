@@ -1,4 +1,7 @@
 Flask-SQLAlchemy==2.4.0
 Flask==1.0.2
 flask_cors
-sqlalchemy
+sqlalchemy~=1.3.4
+werkzeug~=0.15.2
+flask_httpauth
+passlib
