@@ -113,3 +113,4 @@ The application return this errors:
 To run the tests go into root folder application and run in your terminal
 
 python test_app.py
+and launch Carstore3000.postman_collection.json on postman and see result tests
