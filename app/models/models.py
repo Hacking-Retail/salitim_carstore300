@@ -1,9 +1,7 @@
-import os
-from sqlalchemy import Column, String, Integer, create_engine, Float, ForeignKey
+from sqlalchemy import Column, String, Integer, Float, ForeignKey
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 from passlib.apps import custom_app_context as pwd_context
-import json
 
 
 database_name = "carstore"
@@ -31,7 +29,8 @@ class Entity:
         db.session.add(self)
         db.session.commit()
 
-    def update(self):
+    @staticmethod
+    def update():
         db.session.commit()
 
     def delete(self):

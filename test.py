@@ -1,11 +1,6 @@
-# from flask import Flask, request, abort, jsonify
-# from flask_sqlalchemy import SQLAlchemy
-# from flask_cors import CORS, cross_origin
 from app.app import create_app
 import unittest
-import base64
 import json
-import os
 
 
 class TestGlobal(unittest.TestCase):
@@ -32,6 +27,7 @@ class TestGlobal(unittest.TestCase):
             "Authorization": "Basic dXNlcmJldGExOnRlc3Q="})
         print(json.loads(res.data)['success'])
         self.assertEqual(json.loads(res.data)['success'], True)
+
 
 if __name__ == '__main__':
     unittest.main()
