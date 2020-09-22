@@ -112,6 +112,7 @@ def create_app(test_config=None):
             new_bill = Bill(price=active_car.price_eur)
             new_bill.car_id = car_id
             new_bill.cars = active_car
+            new_bill.customer_id = g.user.id
             new_bill.insert()
             return jsonify({"success": True})
         except BaseException:
